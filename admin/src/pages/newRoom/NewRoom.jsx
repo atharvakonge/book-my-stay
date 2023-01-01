@@ -40,7 +40,6 @@ const NewRoom = () => {
       roomNumbers,
     };
     await axios.post(`/rooms/${hotelId}`, newRoom);
-    console.log("newRoom : ", newRoom);
     setShowModal(true);
     setInfo({ ...INITIAL_STATE });
     setRooms([]);

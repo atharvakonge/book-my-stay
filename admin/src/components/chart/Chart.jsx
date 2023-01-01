@@ -7,82 +7,16 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import useFetch from "../../hooks/useFetch";
 
-const Chart = ({ aspect, title }) => {
-  const date = new Date();
-  const cMonth = date.getMonth();
-
-  const { data: data6Month } = useFetch(`hotels/revenue/${cMonth - 6}`);
-  const { data: data5Month } = useFetch(`hotels/revenue/${cMonth - 5}`);
-  const { data: data4Month } = useFetch(`hotels/revenue/${cMonth - 4}`);
-  const { data: data3Month } = useFetch(`hotels/revenue/${cMonth - 3}`);
-  const { data: data2Month } = useFetch(`hotels/revenue/${cMonth - 2}`);
-  const { data: data1Month } = useFetch(`hotels/revenue/${cMonth - 1}`);
-
-  const getMonthName = (index) => {
-    const month = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
-
-    return month[index];
-  };
-
-  const tempData = [
-    { name: getMonthName(cMonth - 6), Total: data6Month },
-    { name: getMonthName(cMonth - 5), Total: data5Month },
-    { name: getMonthName(cMonth - 4), Total: data4Month },
-    { name: getMonthName(cMonth - 3), Total: data3Month },
-    { name: getMonthName(cMonth - 2), Total: data2Month },
-    { name: getMonthName(cMonth - 1), Total: data1Month },
-  ];
-
-  const arr = [];
-  let d = new Date();
-
-  for (let i = 0; i <= 5; i++) {
-    arr.push(d);
-    d.setMonth(d.getMonth() - 1);
-    console.log(d.toLocaleDateString());
-  }
-
-  // const getSubtractedMonth = (num) => {
-  //   const curr_date = new Date();
-  //   const curr_month = curr_date.getMonth();
-  //   const curr_year = curr_date.getFullYear();
-
-  //   if (curr_month - num < 0) {
-  //     return {
-  //       newMonth: 12 - curr_month - num,
-  //       curr_year: curr_year - 1,
-  //     };
-  //   } else {
-  //     return {
-  //       newMonth: curr_month - num,
-  //       curr_year,
-  //     };
-  //   }
-  // };
-
+const Chart = ({ aspect, title, chartData, additionalClass }) => {
   return (
-    <div className="chart">
+    <div className={`chart ${additionalClass}`}>
       <div className="title">{title}</div>
       <ResponsiveContainer width="100%" aspect={aspect}>
         <AreaChart
           width={730}
           height={250}
-          data={tempData}
+          data={chartData}
           margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
         >
           <defs>
