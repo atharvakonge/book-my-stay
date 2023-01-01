@@ -2,6 +2,8 @@ import "./navbar.css";
 import { Link, useLocation } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
+import { getCapitalizedString } from "../../utils/utils";
+
 const Navbar = () => {
   const { user, loading, error, dispatch } = useContext(AuthContext);
   const location = useLocation();
@@ -22,12 +24,12 @@ const Navbar = () => {
     <div className="navbar">
       <div className="navContainer">
         <Link to="/" className="link">
-          <span className="logo">BookMyHotel</span>
+          <span className="logo">BookMyStay</span>
         </Link>
         {showNavButtons &&
           (user ? (
             <div className="navItems">
-              <div>{user.username}</div>
+              <div> Hello, {getCapitalizedString(user.username)}</div>
               <Link to="/" className="link">
                 <button className="navButton" onClick={handleLogout}>
                   Logout

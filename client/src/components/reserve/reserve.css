@@ -14,12 +14,18 @@
     background-color: white;
     padding: 20px;
     position: relative;
+    min-width: 600px;
+    min-height: 275px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
   }
   
   .rClose {
     position: absolute;
-    top: 0;
-    right: 0;
+    top: 5px;
+    right: 5px;
     cursor: pointer;
   }
   
@@ -75,4 +81,8 @@
     border-radius: 5px;
     width: 100%;
     margin-top: 20px;
+  }
+
+  .no-available{
+    color: red;
   }

@@ -47,6 +47,10 @@
   cursor: pointer;
 }
 
+.headerBtn:disabled{
+  opacity: 50%;
+}
+
 .headerSearch {
   height: 30px;
   background-color: white;

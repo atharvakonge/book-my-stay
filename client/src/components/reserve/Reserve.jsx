@@ -3,15 +3,29 @@ import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 
 import "./reserve.css";
 import useFetch from "../../hooks/useFetch";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { SearchContext } from "../../context/SearchContext";
+import { AuthContext } from "../../context/AuthContext";
+
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const Reserve = ({ setOpen, hotelId }) => {
   const [selectedRooms, setSelectedRooms] = useState([]);
+  const [total, setTotal] = useState(0);
   const { data, loading, error } = useFetch(`/hotels/rooms/${hotelId}`);
+
+  let roomPriceMap = new Map();
+
+  data.forEach((roomData) => {
+    roomData.roomNumbers.forEach((room) => {
+      roomPriceMap.set(room._id, roomData.price);
+    });
+  });
+
   const { dates } = useContext(SearchContext);
+  const { user } = useContext(AuthContext);
+  const { _id: userId } = user;
 
   const getDatesInRange = (startDate, endDate) => {
     const start = new Date(startDate);
@@ -30,6 +44,15 @@ const Reserve = ({ setOpen, hotelId }) => {
   };
 
   const alldates = getDatesInRange(dates[0].startDate, dates[0].endDate);
+
+  useEffect(() => {
+    let calculatedValue = 0;
+    selectedRooms.forEach((room) => {
+      calculatedValue += roomPriceMap.get(room) * (alldates.length - 1);
+    });
+
+    setTotal(calculatedValue);
+  }, [selectedRooms]);
 
   const isAvailable = (roomNumber) => {
     const isFound = roomNumber.unavailableDates.some((date) =>
@@ -53,15 +76,25 @@ const Reserve = ({ setOpen, hotelId }) => {
 
   const handleClick = async () => {
     try {
+      if (selectedRooms.length === 0) return;
+
       await Promise.all(
         selectedRooms.map((roomId) => {
-          console.log(alldates);
           const res = axios.put(`/rooms/availability/${roomId}`, {
             dates: alldates,
           });
           return res.data;
         })
       );
+
+      const reservationResponse = await axios.post("/reservations", {
+        userId: userId,
+        startDate: dates[0].startDate,
+        endDate: dates[0].endDate,
+        hotelId: hotelId,
+        roomsId: selectedRooms,
+        total: total,
+      });
       setOpen(false);
       navigate("/");
     } catch (err) {}
@@ -100,9 +133,24 @@ const Reserve = ({ setOpen, hotelId }) => {
             </div>
           </div>
         ))}
-        <button onClick={handleClick} className="rButton">
-          Reserve Now!
-        </button>
+
+        {data.length === 0 && (
+          <>
+            <p className="no-available">
+              Sorry, currently no rooms are available
+            </p>
+          </>
+        )}
+
+        <div>
+          <h3>
+            Total : <span>₹{total}</span>
+          </h3>
+
+          <button onClick={handleClick} className="rButton">
+            Reserve Now!
+          </button>
+        </div>
       </div>
     </div>
   );

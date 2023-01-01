@@ -21,10 +21,15 @@ import { AuthContext } from "../../context/AuthContext";
 const Header = ({ type }) => {
   const [destination, setDestination] = useState("");
   const [openDate, setOpenDate] = useState(false);
+
+  const currentDate = new Date();
+  let nextDate = new Date();
+  nextDate.setDate(nextDate.getDate() + 1);
+
   const [dates, setDates] = useState([
     {
-      startDate: new Date(),
-      endDate: new Date(),
+      startDate: currentDate,
+      endDate: nextDate,
       key: "selection",
     },
   ]);
@@ -200,7 +205,11 @@ const Header = ({ type }) => {
                 )}
               </div>
               <div className="headerSearchItem">
-                <button className="headerBtn" onClick={handleSearch}>
+                <button
+                  className="headerBtn"
+                  onClick={handleSearch}
+                  disabled={destination === ""}
+                >
                   Search
                 </button>
               </div>

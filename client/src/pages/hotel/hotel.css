@@ -38,6 +38,10 @@
   gap: 10px;
 }
 
+.hotelAddress span{
+  text-transform: capitalize;
+}
+
 .hotelDistance {
   color: #0071c2;
   font-weight: 500;
